@@ -3,8 +3,36 @@
     "id": "test-task-1",
     "title": "Test Task 1",
     "description": "Test description",
+    "status": "done",
+    "createdAt": "2025-04-24T04:22:04.249Z",
+    "createdBy": "1",
+    "createdByName": "Tejas"
+  },
+  {
+    "id": "62f30630-4a19-4150-9e3f-ae9afd2a6a49",
+    "title": "New Task",
+    "description": "Description",
     "status": "approved",
-    "createdAt": "2025-04-24T03:16:55.412Z",
-    "createdBy": "1"
+    "createdAt": "2025-04-24T04:33:50.383Z",
+    "createdBy": "1",
+    "createdByName": "Tejas"
+  },
+  {
+    "id": "d770b8a3-e19b-4eb7-9cb2-1d67b64cee9c",
+    "title": "Donald Task",
+    "description": "Some Description",
+    "status": "rejected",
+    "createdAt": "2025-04-24T04:34:41.487Z",
+    "createdBy": "3",
+    "createdByName": "Donald"
+  },
+  {
+    "id": "d7ba822e-ba53-46c1-a2cd-cbc79205679c",
+    "title": "Fake Task",
+    "description": "Fake description",
+    "status": "pending",
+    "createdAt": "2025-04-24T04:37:20.752Z",
+    "createdBy": "3",
+    "createdByName": "Donald"
   }
 ]

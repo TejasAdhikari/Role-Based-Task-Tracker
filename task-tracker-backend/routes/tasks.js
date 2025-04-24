@@ -64,7 +64,8 @@ router.post('/', auth, (req, res) => {
         description: description || '',
         status: 'pending', // Default status
         createdAt: new Date().toISOString(), // Current date and time
-        createdBy: req.user.id 
+        createdBy: req.user.id,
+        createdByName: req.user.name 
     };
     
     // Append the new task to the tasks array and write it to the file

@@ -36,80 +36,85 @@ export const TaskItem = ({
 
     return (
         <li className="px-6 py-4">
-        <div className="flex justify-between items-start">
-            <div className="flex-1">
             <div className="flex items-center">
-                <h3 className="text-lg font-medium text-gray-900">{task.title}</h3>
-                <span className={`ml-2 px-2 py-1 text-xs rounded-full ${getStatusColor(task.status)}`}>
-                {task.status}
-                </span>
-            </div>
-            {task.description && (
-                <p className="mt-1 text-gray-600">{task.description}</p>
-            )}
-            <div className="mt-2 text-sm text-gray-500">
-                Created at {formatDate(task.createdAt)} by {userName || 'User'}
-            </div>
-            </div>
-            
-            <div className="flex space-x-2">
-                {/* Edit button - only for submitters with their own pending tasks */}
-                <RoleGate role={userRole} allowed={['submitter']}>
-                    {task.createdBy === userId && task.status === 'pending' && (
-                    <button
-                        onClick={() => onEdit(task)}
-                        className="p-1 text-indigo-600 hover:text-indigo-900"
-                    >
-                        Edit
-                    </button>
-                    )}
-                </RoleGate>
+                <div className="text-gray-400 cursor-move mr-3">  
+                    ⋮⋮
+                </div>
+                <div className="flex justify-between items-start w-full">
+                    <div className="flex-1">
+                        <div className="flex items-center">
+                            <h3 className="text-lg font-medium text-gray-900">{task.title}</h3>
+                            <span className={`ml-2 px-2 py-1 text-xs rounded-full ${getStatusColor(task.status)}`}>
+                            {task.status}
+                            </span>
+                        </div>
+                        {task.description && (
+                            <p className="mt-1 text-gray-600">{task.description}</p>
+                        )}
+                        <div className="mt-2 text-sm text-gray-500">
+                            Created at {formatDate(task.createdAt)} by {task.createdByName || 'User'}
+                        </div>
+                    </div>
+                    
+                    <div className="flex space-x-2 ml-4 justify-end">
+                        {/* Edit button - only for submitters with their own pending tasks */}
+                        <RoleGate role={userRole} allowed={['submitter']}>
+                            {task.createdBy === userId && task.status === 'pending' && (
+                            <button
+                                onClick={() => onEdit(task)}
+                                className="p-1 text-indigo-600 hover:text-indigo-900"
+                            >
+                                Edit
+                            </button>
+                            )}
+                        </RoleGate>
 
-                {/* Delete button - only for submitters with their own pending tasks */}
-                <RoleGate role={userRole} allowed={['submitter']}>
-                    {task.createdBy === userId && task.status === 'pending' && (
-                    <button
-                        onClick={() => onDelete(task.id)}
-                        className="p-1 text-red-600 hover:text-red-900"
-                    >
-                        Delete
-                    </button>
-                    )}
-                </RoleGate>
+                        {/* Delete button - only for submitters with their own pending tasks */}
+                        <RoleGate role={userRole} allowed={['submitter']}>
+                            {task.createdBy === userId && task.status === 'pending' && (
+                            <button
+                                onClick={() => onDelete(task.id)}
+                                className="p-1 text-red-600 hover:text-red-900"
+                            >
+                                Delete
+                            </button>
+                            )}
+                        </RoleGate>
 
-                {/* Approve/Reject buttons - only for approvers on pending tasks */}
-                <RoleGate role={userRole} allowed={['approver']}>
-                    {task.status === 'pending' && (
-                    <>
-                        <button
-                        onClick={() => onStatusChange(task.id, 'approved')}
-                        className="p-1 text-green-600 hover:text-green-900"
-                        >
-                        Approve
-                        </button>
-                        <button
-                        onClick={() => onStatusChange(task.id, 'rejected')}
-                        className="p-1 text-red-600 hover:text-red-900"
-                        >
-                        Reject
-                        </button>
-                    </>
-                    )}
-                </RoleGate>
+                        {/* Approve/Reject buttons - only for approvers on pending tasks */}
+                        <RoleGate role={userRole} allowed={['approver']}>
+                            {task.status === 'pending' && (
+                            <>
+                                <button
+                                onClick={() => onStatusChange(task.id, 'approved')}
+                                className="p-1 text-green-600 hover:text-green-900"
+                                >
+                                Approve
+                                </button>
+                                <button
+                                onClick={() => onStatusChange(task.id, 'rejected')}
+                                className="p-1 text-red-600 hover:text-red-900"
+                                >
+                                Reject
+                                </button>
+                            </>
+                            )}
+                        </RoleGate>
 
-                {/* Mark as Done button - only for approvers on approved tasks */}
-                <RoleGate role={userRole} allowed={['approver']}>
-                    {task.status === 'approved' && (
-                    <button
-                        onClick={() => onStatusChange(task.id, 'done')}
-                        className="p-1 text-blue-600 hover:text-blue-900"
-                    >
-                        Mark Done
-                    </button>
-                    )}
-                </RoleGate>
+                        {/* Mark as Done button - only for approvers on approved tasks */}
+                        <RoleGate role={userRole} allowed={['approver']}>
+                            {task.status === 'approved' && (
+                            <button
+                                onClick={() => onStatusChange(task.id, 'done')}
+                                className="p-1 text-blue-600 hover:text-blue-900"
+                            >
+                                Mark Done
+                            </button>
+                            )}
+                        </RoleGate>
+                    </div>
+                </div>
             </div>
-        </div>
         </li>
     );
 };

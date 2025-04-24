@@ -12,8 +12,8 @@ const __dirname = dirname(__filename);
 const tasksPath = join(__dirname, '../../data/tasks.json');
 
 // Create mock users and tokens
-const submitter = { id: '1', name: 'Test Submitter', role: 'submitter' };
-const approver = { id: '2', name: 'Test Approver', role: 'approver' };
+const submitter = { id: '1', name: 'Tejas', role: 'submitter' };
+const approver = { id: '2', name: 'Chenwei', role: 'approver' };
 
 const submitterToken = sign(submitter, SECRET_KEY);
 const approverToken = sign(approver, SECRET_KEY);
@@ -34,7 +34,8 @@ describe('Task API RBAC Tests', () => {
         description: 'Test description',
         status: 'pending',
         createdAt: new Date().toISOString(),
-        createdBy: submitter.id
+        createdBy: submitter.id,
+        createdByName: submitter.name
       }
     ];
     

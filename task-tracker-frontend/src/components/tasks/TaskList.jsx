@@ -78,11 +78,36 @@ export const TaskList = () => {
         updateMutation.mutate({ id, task: { status } });
     };
 
-    // Filter tasks based on the selected status filter.
-    const filteredTasks = tasks.filter(task => {
-        if (statusFilter === 'all') return true;
-        return task.status === statusFilter;
-    });
+    // // Filter tasks based on the selected status filter.
+    // const filteredTasks = tasks.filter(task => {
+    //     if (statusFilter === 'all') return true;
+    //     return task.status === statusFilter;
+    // });
+
+    // Handle task reordering
+    const handleDragEnd = (result) => {
+        if (!result.destination) return;
+        
+        const items = Array.from(orderedTasks);
+        const [reorderedItem] = items.splice(result.source.index, 1);
+        items.splice(result.destination.index, 0, reorderedItem);
+        
+        setOrderedTasks(items);
+    };
+
+    // Update ordered tasks when tasks change
+    useEffect(() => {
+        if (tasks.length) {
+            const filtered = tasks.filter(task => {
+                if (statusFilter === 'all') return true;
+                return task.status === statusFilter;
+            });
+            setOrderedTasks(filtered);
+        } 
+        else {
+            setOrderedTasks([]);
+        }
+    }, [tasks, statusFilter]);
 
     // If tasks are being loaded, show a loading message.
     if (isLoading) {
@@ -107,43 +132,105 @@ export const TaskList = () => {
             </div>
         </div>
 
-        {filteredTasks.length === 0 ? (
+        {orderedTasks.length === 0 ? (
             <div className="text-center py-10 bg-gray-50 rounded-lg">
             <p className="text-gray-500">No tasks found</p>
             </div>
         ) : (
-            <div className="bg-white shadow overflow-hidden sm:rounded-md">
-            <ul className="divide-y divide-gray-200">
-                {filteredTasks.map(task => (
-                <TaskItem
-                    key={task.id}
-                    task={task}
-                    userRole={user.role}
-                    userId={user.id}
-                    userName={user.name}
-                    onEdit={setEditTask}
-                    onDelete={handleDeleteTask}
-                    onStatusChange={handleStatusChange}
-                />
-                ))}
-            </ul>
-            </div>
-        )}
+                <DragDropContext onDragEnd={handleDragEnd}>
+                    <Droppable droppableId="tasks">
+                        {(provided) => (
+                        <div
+                            className="bg-white shadow overflow-hidden sm:rounded-md"
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                        >
+                            <ul className="divide-y divide-gray-200">
+                            {orderedTasks.map((task, index) => (
+                                <Draggable 
+                                    key={task.id} 
+                                    draggableId={task.id} 
+                                    index={index}
+                                    isDragDisabled={
+                                        (user.role === 'submitter' && (task.createdBy !== user.id || task.status !== 'pending')) || 
+                                        (user.role === 'approver' && task.status !== 'pending')
+                                      }
+                                    >
+                                    {(provided) => (
+                                        <div
+                                        ref={provided.innerRef}
+                                        {...provided.draggableProps}
+                                        {...provided.dragHandleProps}
+                                        >
+                                        <TaskItem
+                                            task={task}
+                                            userRole={user.role}
+                                            userId={user.id}
+                                            userName={user.name}
+                                            onEdit={setEditTask}
+                                            onDelete={handleDeleteTask}
+                                            onStatusChange={handleStatusChange}
+                                        />
+                                        </div>
+                                    )}
+                                </Draggable>
+                            ))}
+                            {provided.placeholder}
+                            </ul>
+                        </div>
+                        )}
+                    </Droppable>
+                </DragDropContext>
+            )}
 
-        {showForm && (
-            <TaskForm
+            {showForm && (
+                <TaskForm
                 onSubmit={handleCreateTask}
                 onCancel={() => setShowForm(false)}
-            />
-        )}
+                />
+            )}
 
-        {editTask && (
-            <TaskForm
-            task={editTask}
-            onSubmit={(task) => handleUpdateTask(editTask.id, task)}
-            onCancel={() => setEditTask(null)}
-            />
-        )}
-        </div>
-    );
+            {editTask && (
+                <TaskForm
+                task={editTask}
+                onSubmit={(task) => handleUpdateTask(editTask.id, task)}
+                onCancel={() => setEditTask(null)}
+                />
+            )}
+            </div>
+        );
+        //     <div className="bg-white shadow overflow-hidden sm:rounded-md">
+        //     <ul className="divide-y divide-gray-200">
+        //         {filteredTasks.map(task => (
+        //         <TaskItem
+        //             key={task.id}
+        //             task={task}
+        //             userRole={user.role}
+        //             userId={user.id}
+        //             userName={user.name}
+        //             onEdit={setEditTask}
+        //             onDelete={handleDeleteTask}
+        //             onStatusChange={handleStatusChange}
+        //         />
+        //         ))}
+        //     </ul>
+        //     </div>
+        // )}
+
+        // {showForm && (
+        //     <TaskForm
+        //         onSubmit={handleCreateTask}
+        //         onCancel={() => setShowForm(false)}
+        //     />
+        // )}
+
+        // {editTask && (
+        //     <TaskForm
+        //     task={editTask}
+        //     onSubmit={(task) => handleUpdateTask(editTask.id, task)}
+        //     onCancel={() => setEditTask(null)}
+        //     />
+        // )}
+        // </div>
+    // );
 };
