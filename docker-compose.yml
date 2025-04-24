@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  frontend:
+    build:
+      context: ./task-tracker-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./task-tracker-backend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./task-tracker-backend/data:/app/data
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
